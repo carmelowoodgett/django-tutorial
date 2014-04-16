@@ -40,3 +40,13 @@ class PollMethodTests(TestCase):
         """
         return Poll.objects.create(question=question,
             pub_date=timezone.now() + datetime.timedelta(days=days))
+
+class PollViewTests(TestCase):
+    def test_index_view_with_no_polls(self):
+        """
+        If no polls exist, an appropriate message should be displayed.
+        """
+        response = self.client.get(reverse('polls:index'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "No polls are available.")
+        self.assertQueryEqual(response.context['latest_poll_list'], [])
